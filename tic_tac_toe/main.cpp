@@ -8,11 +8,8 @@ char board[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
 
 bool field_occupied[9]= {false,false,false,false,false,false,false,false,false};
 
-char player = 'x';
-
-int input = 0;
-
 bool winner_found = false;
+
 int winner()
 {
     bool player_1_won = false;
@@ -20,7 +17,7 @@ int winner()
     
     for (int i = 0; i < 3; i++)
     {
-        if (board[i][0]== board[i][1]and board[i][1]== board[i][2])
+        if (board[i][0]== board[i][1] && board[i][1]== board[i][2])
         {
             if (board[i][0]== 'o')
             {
@@ -33,10 +30,7 @@ int winner()
                 break;
             }
         }
-    }
-    for (int i = 0; i < 3; i++)
-    {
-        if (board[0][i]== board[1][i] and board[1][i]== board[2][i])
+        else if (board[0][i]== board[1][i] && board[1][i]== board[2][i])
         {
             if (board[0][i]== 'o')
             {
@@ -50,7 +44,7 @@ int winner()
             }
         }
     }
-    if (board[0][0] == board[1][1] and board[1][1] == board[2][2])
+    if (board[0][0] == board[1][1] && board[1][1] == board[2][2])
     {
         if (board[1][1]== 'o')
         {
@@ -61,7 +55,7 @@ int winner()
             player_1_won = true;
         }
     }
-    if (board[0][2] == board[1][1] and board[1][1] == board[2][0])
+    if (board[0][2] == board[1][1] && board[1][1] == board[2][0])
     {
         if (board[1][1]== 'o')
         {
@@ -95,7 +89,13 @@ void print_board()
     std::cout << " " <<board[2][0]<<" | "<<board[2][1]<<" | "<<board[2][2]<<" " << std::endl;
 }
 
-void made_move(int field)
+/**
+ * @brief Marks field as ouccupied and sets the board field to the player symbol
+ *
+ * @param field the field number
+ * @param player the current player symbol
+ */
+void made_move(int field, char player)
 {
     field_occupied[field-1]=true;
     switch (field)
@@ -130,31 +130,25 @@ void made_move(int field)
     }
 }
 
-void switch_player()
+char switch_player(char player)
 {
-    if (player == 'x')
-    {
-        player = 'o';
-    }
-    else
-    {
-        player = 'x';
-    }
+    player = (player == 'x') ? 'o' : 'x';
+    return player;
 }
 
-void check_input()
+void check_input(int input)
 {
-    if (input< 1 or input > 9)
+    if (input< 1 || input > 9)
     {
         std::cout << "Choose a number from 1-9"<<std::endl;
         std::cin>>input;
-        check_input();
+        check_input(input);
     }
     if (field_occupied[input-1])
     {
         std::cout<<"This field is occupied!"<<std::endl;
         std::cin>>input;
-        check_input();
+        check_input(input);
     }
     return;
 }
@@ -162,14 +156,16 @@ void check_input()
 int main ()
 {
     int win_status = 0;
+    char player = 'x';
+    int input = 0;
     std::cout << "Welcome to the tic tac toe" << std::endl;
     while (not winner_found)
     {
         print_board();
         std::cout << "Player "<<player << " it's your turn." << std::endl;
         std::cin >> input;
-        check_input();
-        made_move(input);
+        check_input(input);
+        made_move(input, player);
         win_status = winner();
         switch (win_status)
         {
@@ -182,7 +178,7 @@ int main ()
                 std::cout << "Player o won!" << std::endl;
                 return 0;
         }
-        switch_player();
+        player = switch_player(player);
         system("clear");
     }
     return 0;
