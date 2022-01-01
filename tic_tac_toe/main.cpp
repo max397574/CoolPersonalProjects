@@ -4,8 +4,6 @@
 #define PLAYER_2 2
 
 
-bool field_occupied[9]= {false,false,false,false,false,false,false,false,false};
-
 int winner(char** board)
 {
     bool player_1_won = false;
@@ -92,39 +90,40 @@ void print_board(char** board)
  * @param field the field number
  * @param player the current player symbol
  */
-void made_move(int field, char player, char** board)
+bool* made_move(int field, char player, char** board, bool* field_occupied)
 {
     field_occupied[field-1]=true;
     switch (field)
     {
         case 1:
             board[0][0]=player;
-            return;
+            return field_occupied;
         case 2:
             board[0][1]=player;
-            return;
+            return field_occupied;
         case 3:
             board[0][2]=player;
-            return;
+            return field_occupied;
         case 4:
             board[1][0]=player;
-            return;
+            return field_occupied;
         case 5:
             board[1][1]=player;
-            return;
+            return field_occupied;
         case 6:
             board[1][2]=player;
-            return;
+            return field_occupied;
         case 7:
             board[2][0]=player;
-            return;
+            return field_occupied;
         case 8:
             board[2][1]=player;
-            return;
+            return field_occupied;
         case 9:
             board[2][2]=player;
-            return;
+            return field_occupied;
     }
+    return field_occupied;
 }
 
 char switch_player(char player)
@@ -133,25 +132,27 @@ char switch_player(char player)
     return player;
 }
 
-void check_input(int input)
+void check_input(int input, bool* field_occupied)
 {
     if (input< 1 || input > 9)
     {
         std::cout << "Choose a number from 1-9"<<std::endl;
         std::cin>>input;
-        check_input(input);
+        check_input(input, field_occupied);
     }
     if (field_occupied[input-1])
     {
         std::cout<<"This field is occupied!"<<std::endl;
         std::cin>>input;
-        check_input(input);
+        check_input(input, field_occupied);
     }
     return;
 }
 
 int main ()
 {
+    bool field_occupied[9]= {false,false,false,false,false,false,false,false,false};
+    bool* occupied_fields = &field_occupied[0];
     char board[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
     int win_status = 0;
     char player = 'x';
@@ -164,8 +165,8 @@ int main ()
         print_board(board_ptr);
         std::cout << "Player "<<player << " it's your turn." << std::endl;
         std::cin >> input;
-        check_input(input);
-        made_move(input, player, board_ptr);
+        check_input(input, occupied_fields);
+        made_move(input, player, board_ptr, occupied_fields);
         win_status = winner(board_ptr);
         switch (win_status)
         {
