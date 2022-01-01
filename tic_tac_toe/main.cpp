@@ -1,16 +1,12 @@
 #include <iostream>
-#include <sys/errno.h>
 
 #define PLAYER_1 1
 #define PLAYER_2 2
 
-char board[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
 
 bool field_occupied[9]= {false,false,false,false,false,false,false,false,false};
 
-bool winner_found = false;
-
-int winner()
+int winner(char** board)
 {
     bool player_1_won = false;
     bool player_2_won = false;
@@ -68,18 +64,19 @@ int winner()
     }
     if (player_1_won)
     {
-        winner_found = true;
         return PLAYER_1;
     }
     else if (player_2_won)
     {
-        winner_found = true;
         return PLAYER_2;
     }
     return 0;
 }
 
-void print_board()
+/**
+ * @brief Prints out the board
+ */
+void print_board(char** board)
 {
     std::cout << "Input the number for the field you want" << std::endl;
     std::cout << " " <<board[0][0]<<" | "<<board[0][1]<<" | "<<board[0][2]<<" " << std::endl;
@@ -95,7 +92,7 @@ void print_board()
  * @param field the field number
  * @param player the current player symbol
  */
-void made_move(int field, char player)
+void made_move(int field, char player, char** board)
 {
     field_occupied[field-1]=true;
     switch (field)
@@ -155,21 +152,26 @@ void check_input(int input)
 
 int main ()
 {
+    char board[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
     int win_status = 0;
     char player = 'x';
+    char* board_ptrs[3] = {&board[0][0], &board[1][0], &board[2][0]};
+    char** board_ptr = &board_ptrs[0];
     int input = 0;
     std::cout << "Welcome to the tic tac toe" << std::endl;
-    while (not winner_found)
+    while (true)
     {
-        print_board();
+        print_board(board_ptr);
         std::cout << "Player "<<player << " it's your turn." << std::endl;
         std::cin >> input;
         check_input(input);
-        made_move(input, player);
-        win_status = winner();
+        made_move(input, player, board_ptr);
+        win_status = winner(board_ptr);
         switch (win_status)
         {
             case 0:
+                player = switch_player(player);
+                system("clear");
                 break;
             case PLAYER_1:
                 std::cout << "Player x won!" << std::endl;
@@ -178,8 +180,6 @@ int main ()
                 std::cout << "Player o won!" << std::endl;
                 return 0;
         }
-        player = switch_player(player);
-        system("clear");
     }
     return 0;
 }
