@@ -4,62 +4,38 @@
 #define PLAYER_2 2
 
 
-int winner(char** board)
+int winner(char* board)
 {
+    int winning_opts[8][3]={
+        {0,1,2},
+        {3,4,5},
+        {6,7,8},
+        {0,3,6},
+        {1,4,7},
+        {2,5,8},
+        {0,4,8},
+        {2,4,6},
+    };
     bool player_1_won = false;
     bool player_2_won = false;
-    
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 8; i++)
     {
-        if (board[i][0]== board[i][1] && board[i][1]== board[i][2])
+        int a = winning_opts[i][0];
+        int b = winning_opts[i][1];
+        int c = winning_opts[i][2];
+        if (board[a]==board[b] && board[b]==board[c])
         {
-            if (board[i][0]== 'o')
+            if (board[a]== 'x')
             {
-                player_2_won = true;
-                break;
+                player_1_won = true;
             }
             else
             {
-                player_1_won = true;
-                break;
-            }
-        }
-        else if (board[0][i]== board[1][i] && board[1][i]== board[2][i])
-        {
-            if (board[0][i]== 'o')
-            {
                 player_2_won = true;
-                break;
-            }
-            else
-            {
-                player_1_won = true;
-                break;
             }
         }
     }
-    if (board[0][0] == board[1][1] && board[1][1] == board[2][2])
-    {
-        if (board[1][1]== 'o')
-        {
-            player_2_won = true;
-        }
-        else
-        {
-            player_1_won = true;
-        }
-    }
-    if (board[0][2] == board[1][1] && board[1][1] == board[2][0])
-    {
-        if (board[1][1]== 'o')
-        {
-            player_2_won = true;
-        }
-        else
-        {
-            player_1_won = true;
-        }
-    }
+
     if (player_1_won)
     {
         return PLAYER_1;
@@ -72,57 +48,28 @@ int winner(char** board)
 }
 
 /**
- * @brief Prints out the board
- */
-void print_board(char** board)
+* @brief Prints out the board
+*/
+void print_board(char* board)
 {
     std::cout << "Input the number for the field you want" << std::endl;
-    std::cout << " " <<board[0][0]<<" | "<<board[0][1]<<" | "<<board[0][2]<<" " << std::endl;
+    std::cout << " " <<board[0]<<" | "<<board[1]<<" | "<<board[2]<<" " << std::endl;
     std::cout << "-----------" << std::endl;
-    std::cout << " " <<board[1][0]<<" | "<<board[1][1]<<" | "<<board[1][2]<<" " << std::endl;
+    std::cout << " " <<board[3]<<" | "<<board[4]<<" | "<<board[5]<<" " << std::endl;
     std::cout << "-----------" << std::endl;
-    std::cout << " " <<board[2][0]<<" | "<<board[2][1]<<" | "<<board[2][2]<<" " << std::endl;
+    std::cout << " " <<board[6]<<" | "<<board[7]<<" | "<<board[8]<<" " << std::endl;
 }
 
 /**
- * @brief Marks field as ouccupied and sets the board field to the player symbol
- *
- * @param field the field number
- * @param player the current player symbol
- */
-bool* made_move(int field, char player, char** board, bool* field_occupied)
+* @brief Marks field as ouccupied and sets the board field to the player symbol
+*
+* @param field the field number
+* @param player the current player symbol
+*/
+bool* made_move(int field, char player, char* board, bool* field_occupied)
 {
     field_occupied[field-1]=true;
-    switch (field)
-    {
-        case 1:
-            board[0][0]=player;
-            return field_occupied;
-        case 2:
-            board[0][1]=player;
-            return field_occupied;
-        case 3:
-            board[0][2]=player;
-            return field_occupied;
-        case 4:
-            board[1][0]=player;
-            return field_occupied;
-        case 5:
-            board[1][1]=player;
-            return field_occupied;
-        case 6:
-            board[1][2]=player;
-            return field_occupied;
-        case 7:
-            board[2][0]=player;
-            return field_occupied;
-        case 8:
-            board[2][1]=player;
-            return field_occupied;
-        case 9:
-            board[2][2]=player;
-            return field_occupied;
-    }
+    board[field-1]=player;
     return field_occupied;
 }
 
@@ -152,22 +99,20 @@ void check_input(int* input, bool* field_occupied)
 int main ()
 {
     bool field_occupied[9]= {false,false,false,false,false,false,false,false,false};
-    char board[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+    char board[9] = {'1','2','3','4','5','6','7','8','9'};
     int win_status = 0;
     char player = 'x';
-    char* board_ptrs[3] = {&board[0][0], &board[1][0], &board[2][0]};
-    char** board_ptr = &board_ptrs[0];
     int input = 0;
     std::cout << "Welcome to the tic tac toe" << std::endl;
     int moves = 0;
     while (true)
     {
-        print_board(board_ptr);
+        print_board(board);
         std::cout << "Player "<<player << " it's your turn." << std::endl;
         std::cin >> input;
         check_input(&input, &field_occupied[0]);
-        made_move(input, player, board_ptr, &field_occupied[0]);
-        win_status = winner(board_ptr);
+        made_move(input, player, board, &field_occupied[0]);
+        win_status = winner(board);
         switch (win_status)
         {
             case 0:
@@ -176,9 +121,11 @@ int main ()
                 break;
             case PLAYER_1:
                 std::cout << "Player x won!" << std::endl;
+                print_board(board);
                 return 0;
             case PLAYER_2:
                 std::cout << "Player o won!" << std::endl;
+                print_board(board);
                 return 0;
         }
         moves++;
