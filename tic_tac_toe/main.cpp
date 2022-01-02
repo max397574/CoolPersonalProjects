@@ -132,18 +132,18 @@ char switch_player(char player)
     return player;
 }
 
-void check_input(int input, bool* field_occupied)
+void check_input(int* input, bool* field_occupied)
 {
-    if (input< 1 || input > 9)
+    if (*input< 1 || *input > 9)
     {
         std::cout << "Choose a number from 1-9"<<std::endl;
-        std::cin>>input;
+        std::cin>>*input;
         check_input(input, field_occupied);
     }
-    if (field_occupied[input-1])
+    if (field_occupied[*input-1])
     {
         std::cout<<"This field is occupied!"<<std::endl;
-        std::cin>>input;
+        std::cin>>*input;
         check_input(input, field_occupied);
     }
     return;
@@ -159,13 +159,14 @@ int main ()
     char* board_ptrs[3] = {&board[0][0], &board[1][0], &board[2][0]};
     char** board_ptr = &board_ptrs[0];
     int input = 0;
+    int* input_ptr = &input;
     std::cout << "Welcome to the tic tac toe" << std::endl;
     while (true)
     {
         print_board(board_ptr);
         std::cout << "Player "<<player << " it's your turn." << std::endl;
         std::cin >> input;
-        check_input(input, occupied_fields);
+        check_input(input_ptr, occupied_fields);
         made_move(input, player, board_ptr, occupied_fields);
         win_status = winner(board_ptr);
         switch (win_status)
