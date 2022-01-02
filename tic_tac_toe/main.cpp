@@ -161,6 +161,7 @@ int main ()
     int input = 0;
     int* input_ptr = &input;
     std::cout << "Welcome to the tic tac toe" << std::endl;
+    int moves = 0;
     while (true)
     {
         print_board(board_ptr);
@@ -181,6 +182,12 @@ int main ()
             case PLAYER_2:
                 std::cout << "Player o won!" << std::endl;
                 return 0;
+        }
+        moves++;
+        if (moves == 9)
+        {
+            std::cout << "It's a draw" << std::endl;
+            return 0;
         }
     }
     return 0;
