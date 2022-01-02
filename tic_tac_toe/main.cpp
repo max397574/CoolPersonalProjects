@@ -152,14 +152,12 @@ void check_input(int* input, bool* field_occupied)
 int main ()
 {
     bool field_occupied[9]= {false,false,false,false,false,false,false,false,false};
-    bool* occupied_fields = &field_occupied[0];
     char board[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
     int win_status = 0;
     char player = 'x';
     char* board_ptrs[3] = {&board[0][0], &board[1][0], &board[2][0]};
     char** board_ptr = &board_ptrs[0];
     int input = 0;
-    int* input_ptr = &input;
     std::cout << "Welcome to the tic tac toe" << std::endl;
     int moves = 0;
     while (true)
@@ -167,8 +165,8 @@ int main ()
         print_board(board_ptr);
         std::cout << "Player "<<player << " it's your turn." << std::endl;
         std::cin >> input;
-        check_input(input_ptr, occupied_fields);
-        made_move(input, player, board_ptr, occupied_fields);
+        check_input(&input, &field_occupied[0]);
+        made_move(input, player, board_ptr, &field_occupied[0]);
         win_status = winner(board_ptr);
         switch (win_status)
         {
