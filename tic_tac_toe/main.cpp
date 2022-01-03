@@ -66,17 +66,16 @@ void print_board(char* board)
 * @param field the field number
 * @param player the current player symbol
 */
-bool* made_move(int field, char player, char* board, bool* field_occupied)
+void made_move(int field, char player, char* board, bool* field_occupied)
 {
     field_occupied[field-1]=true;
     board[field-1]=player;
-    return field_occupied;
+    return;
 }
 
 char switch_player(char player)
 {
-    player = (player == 'x') ? 'o' : 'x';
-    return player;
+    return (player == 'x') ? 'o' : 'x';
 }
 
 void check_input(int* input, bool* field_occupied)
